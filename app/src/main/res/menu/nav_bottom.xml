@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_bottom_home"
+        android:title="Home"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/nav_bottom_Session"
+        android:title="Session"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/nav_bottom_ex1"
+        android:title="ex1"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/nav_bottom_ex2"
+        android:title="ex2"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/nav_bottom_mypage"
+        android:title="MyPage"
+        android:enabled="true" />
+
+</menu>
