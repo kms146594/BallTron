@@ -5,14 +5,21 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.balltron.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ActivityMain : AppCompatActivity() {
 
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val homeFragment = FragmentHome()
 
-    lateinit var bnv : BottomNavigationView
+    private val fragmentMap = mapOf(
+        R.id.nav_bottom_home to homeFragment,
+    )
+
+    private lateinit var bnv : BottomNavigationView
+
     private var backPressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,23 +28,16 @@ class ActivityMain : AppCompatActivity() {
 
         bnv = binding.mainBnv
 
-        supportFragmentManager
-            .beginTransaction()
+        supportFragmentManager.beginTransaction()
             .replace(binding.mainFrame.id, FragmentHome())
+            .addToBackStack(null)
             .commitAllowingStateLoss()
 
         bnv.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_bottom_home -> {
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(binding.mainFrame.id, FragmentHome())
-                        .commitAllowingStateLoss()
-                    true
-                }
-
-                else -> false
-            }
+             fragmentMap[menuItem.itemId]?.let { fragment ->
+                 replaceFragment(fragment)
+                 true
+             } ?: false
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -45,15 +45,21 @@ class ActivityMain : AppCompatActivity() {
                 if (supportFragmentManager.backStackEntryCount > 0) {
                     supportFragmentManager.popBackStack()
                 } else {
-                    showBottomNaviagtion()
+                    showExitConfirmationDialog()
                 }
             }
         })
     }
 
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(binding.mainFrame.id, fragment)
+            .commitAllowingStateLoss()
+    }
+
     private fun showExitConfirmationDialog() {
         if (System.currentTimeMillis() - backPressedTime < 2000) {
-            finishAffinity()
+            finish()
             return
         }
 
@@ -65,7 +71,7 @@ class ActivityMain : AppCompatActivity() {
         bnv.visibility = View.GONE
     }
 
-    fun showBottomNaviagtion() {
+    fun showBottomNavigation() {
         bnv.visibility = View.VISIBLE
     }
 }
